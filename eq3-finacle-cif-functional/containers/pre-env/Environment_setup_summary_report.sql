@@ -5,7 +5,7 @@ set lines 1100
 set page size 0
 set pages 0
 set trimspool on
-spool $SPOOL_PATH/Environment_setup_summary.dat
+spool $SPOOL_PATH/Environment_setup_summary_pre.dat
 select
 'OBJECT_TYPE'||'|'||
 'Count'
