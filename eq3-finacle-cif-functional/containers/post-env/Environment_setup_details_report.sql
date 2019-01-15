@@ -14,7 +14,7 @@ union all
  SELECT OBJECT_TYPE ||'|'||
   OBJECT_NAME
   FROM USER_OBJECTS
-  order by OBJECT_TYPE,OBJECT_NAME;
+  order by 1
 spool off;
 exit;
 
