@@ -1,0 +1,7 @@
+cif-spool
+liability-spool
+asset-spool
+treasury-spool
+trade-spool
+finance-spool
+custom-spool
