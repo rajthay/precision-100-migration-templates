@@ -1,0 +1,34 @@
+
+set head off
+set feedback off
+set term off
+set linesize 5000
+set pages 0
+set colsep ''
+set trimspool on
+spool $MIG_PATH/output/TF/MOCK4A/PCA_DISB.txt
+SELECT
+ACCOUNT_NUMBER,
+CRNCY_CODE,
+SOL_ID,
+DS_AMT,
+DS_CRNCY_CODE,
+DS_DATE,
+DS_DUE_DATE,
+PNL_INT_ST_DATE,
+OPER_ACC_NUM,
+INT_CODE,
+INT_CRNCY_CODE,
+PEGGED_FLG,
+PG_FREQ_IN_MON,
+PG_FREQ_IN_DAYS,
+CUST_PR_INT_DR,
+ACC_PR_INT_DR,
+CHNL_PR_INT_DR,
+ECGC_FLG,
+UPLOAD_STATUS,
+ACCT_SCHM,
+REMARKS
+FROM PCA_DISB;
+SPOOL OFF;
+ 

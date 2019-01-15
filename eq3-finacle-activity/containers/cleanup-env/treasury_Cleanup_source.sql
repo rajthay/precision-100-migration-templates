@@ -1,0 +1,17 @@
+Truncate TABLE EPPS;
+Truncate TABLE TPOS;
+Truncate TABLE DLDT;
+Truncate TABLE CUST;
+Truncate TABLE SCHD;
+Truncate TABLE SECM;
+Truncate TABLE SPSH;
+Truncate TABLE SECP;
+Truncate TABLE revh;
+Truncate TABLE FXDH;
+Truncate TABLE YCRH;
+Truncate TABLE RATE;
+Truncate TABLE RPRH;
+Truncate TABLE RPDT;
+Truncate TABLE SWDT;
+Truncate TABLE SWDH;
+Truncate TABLE YCRS;

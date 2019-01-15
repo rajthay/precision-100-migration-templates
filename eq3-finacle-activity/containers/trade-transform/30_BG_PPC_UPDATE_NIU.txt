@@ -1,0 +1,36 @@
+DECLARE
+   CURSOR updgam
+   IS
+      select * from tf_bg_ppc ;
+
+   cnt   NUMBER (10) := 0;
+BEGIN
+   cnt := 0;
+
+   FOR i IN updgam
+   LOOP
+   
+       update  TF001 b SET 
+         AUTORENEWAPPLICABLEFLG=i.AUTORENEWAPPLICABLEFLG,
+         FINALEXPIRYDATE=I.FINALEXPIRYDATE,
+         AUTORENEWNEXTCYCLE=i.AUTORENEWNEXTCYCLE,
+         AUTORENEWFREQTYPE=i.AUTORENEWFREQTYPE,
+         AUTORENEWFREQDATE=i.AUTORENEWFREQDATE,
+         ISFREQDAYONHOLIDAY=i.ISFREQDAYONHOLIDAY,
+         --AUTO_RENEW_DATE=i.EXPIRY_DATE ,
+         BG_EXPIRY_DATE=TO_CHAR(i.EXPIRY_DATE,'DD-MM-YYYY') ,
+         BG_CLAIM_EXPIRY_DATE=TO_CHAR(i.EXPIRY_DATE,'DD-MM-YYYY') 
+       where TRIM(b.BG_NUM)=TRIM(i.bg_num) ;
+
+      cnt := cnt + 1;
+      IF (cnt > 100)
+      THEN
+        COMMIT;
+         cnt := 0;
+      END IF;
+   END LOOP;
+
+  COMMIT;
+END;
+/
+

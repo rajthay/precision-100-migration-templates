@@ -1,0 +1,3 @@
+  SELECT OBJECT_TYPE, count(*) 
+   FROM USER_OBJECTS
+    group by OBJECT_TYPE

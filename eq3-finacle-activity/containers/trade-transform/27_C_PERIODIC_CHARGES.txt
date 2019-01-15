@@ -1,0 +1,350 @@
+TRUNCATE TABLE TDCC;
+
+INSERT INTO TDCC
+SELECT
+REPLACE (TRIM(M.MASTER_REF),'/','-') B2K_ID,
+REPLACE (TRIM(M.MASTER_REF),'/','-') B2KID_TYPE,
+'A' EVENT_TYPE,
+'1' EVENT_SRL_NUM,
+'1' TFCT_SRL_NUM,
+'1' TDCC_KEY_SRL_NUM,
+'Y' ENTITY_CRE_FLG,
+FRQ.EXPIRY_DAT DUE_DATE,
+'C' CR_DR_IND,
+FRQ.CHG_CCY TRAN_CRNCY_CODE,
+TO_CHAR(FRQ.CHG_DUE/C8PWD,'99999999999999.99') TRAN_AMT,
+'' TRAN_ID,
+FRQ.DDATE TRAN_DATE,
+'' TRAN_RMKS,
+'' STATUS_FLG,
+'' PTRAN_BUS_TYPE,
+'N' DEL_FLG,
+'SYSTEM' LCHG_USER_ID,
+SYSDATE LCHG_TIME,
+'SYSTEM' RCRE_USER_ID,
+SYSDATE RCRE_TIME,
+'0' TS_CNT,
+'01' BANK_ID,
+FRQ.NEW_FREQ FREQUENCY
+FROM MASTER_ODS M
+INNER join(
+SELECT MA.MASTER_REF,BC.CHG_DUE,PC.START_DAT,C99.T1_FRQ,BC.CHG_CCY,C99.P_CHG_UNIT,PC.END_DAT,DE.DDATE,MA.EXPIRY_DAT,C99.P_CHG_NO,
+CASE WHEN C99.P_CHG_UNIT='M' AND C99.P_CHG_NO=3 THEN 'Q'
+     WHEN C99.P_CHG_UNIT='M' AND C99.P_CHG_NO=6 THEN 'H'
+     WHEN C99.P_CHG_UNIT='M' AND C99.P_CHG_NO=12 THEN 'Y'
+     ELSE C99.P_CHG_UNIT END NEW_FREQ
+FROM DIARYENTRY_ODS DE
+INNER JOIN MASTER_ODS MA ON MA.KEY97=DE.MASTER_KEY
+LEFT JOIN RELITEM_ODS RI ON RI.KEY97=DE.PERIOD_CHG AND RI.TYPEFLAG='20678'
+LEFT JOIN BASEEVENT_ODS BE ON BE.KEY97=RI.EVENT_KEY 
+LEFT JOIN PERIODCHG_ODS PC ON PC.KEY97=RI.KEY97
+LEFT JOIN BASECHARGE_ODS BC ON BC.KEY97=RI.KEY97
+LEFT JOIN EVENTCHG_ODS EC ON EC.KEY97=BC.KEY97
+LEFT JOIN CHARGE99_ODS C99 ON C99.KEY97=EC.CHG_SCH
+LEFT JOIN CHARGE04_ODS C04 ON C04.KEY97=C99.CHG_TYPE
+WHERE DE.TYPEFLAG ='31115' 
+AND MA.REFNO_PFIX = 'SBG' AND MA.STATUS='LIV' AND MA.LIAB_AMT!=0 AND TRIM(MA.EXPIRY_DAT) IS NOT NULL  
+) FRQ on FRQ.MASTER_REF = M.MASTER_REF 
+LEFT JOIN C8PF ON C8CCY=FRQ.CHG_CCY
+WHERE M.REFNO_PFIX = 'SBG' AND M.STATUS='LIV' AND LIAB_AMT!=0 AND TRIM(M.EXPIRY_DAT) IS NOT NULL;
+
+COMMIT;
+
+INSERT INTO TDCC
+SELECT
+REPLACE (TRIM(M.MASTER_REF),'/','-') B2K_ID,
+REPLACE (TRIM(M.MASTER_REF),'/','-') B2KID_TYPE,
+'A' EVENT_TYPE,
+'1' EVENT_SRL_NUM,
+'1' TFCT_SRL_NUM,
+'1' TDCC_KEY_SRL_NUM,
+'Y' ENTITY_CRE_FLG,
+E.START_DATE DUE_DATE,--CASE WHEN TRIM(M.EXPIRY_DAT) IS NOT NULL  THEN M.EXPIRY_DAT ELSE TO_DATE('20991231','YYYYMMDD') END DUE_DATE,
+'C' CR_DR_IND,
+M.CCY TRAN_CRNCY_CODE,
+TO_CHAR(E.AMOUNT/C.C8PWD,'99999999999999.99') TRAN_AMT,
+'' TRAN_ID,
+E.START_DATE TRAN_DATE,
+'' TRAN_RMKS,
+'' STATUS_FLG,
+'' PTRAN_BUS_TYPE,
+'N' DEL_FLG,
+'SYSTEM' LCHG_USER_ID,
+SYSDATE LCHG_TIME,
+'SYSTEM' RCRE_USER_ID,
+SYSDATE RCRE_TIME,
+'0' TS_CNT,
+'01' BANK_ID,
+'M'
+FROM MASTER_ODS M
+INNER JOIN BASEEVENT_ODS E ON E.MASTER_KEY=M.KEY97 and E.TYPEFLAG ='30881' 
+INNER JOIN C8PF C ON E.CCY = C.C8CCY 
+INNER JOIN PRODTYPE_ODS PR ON M.PRODTYPE = PR.KEY97
+left join(
+SELECT DISTINCT 'M' P_CHG_UNIT,master0.MASTER_REF
+FROM
+      MASTER_ODS master0
+   INNER JOIN  ( 
+          ( SELECT * FROM BASEEVENT_ODS 
+                   WHERE TYPEFLAG IN (30881)
+          ) Event0
+   INNER JOIN PAYCHARGES_ODS Event1
+          ON Event1.KEY97 = Event0.KEY97 ) 
+          ON master0.KEY97 = Event0.MASTER_KEY
+   INNER JOIN C8PF currency0
+          ON Event0.CCY = currency0.C8CCY
+   INNER JOIN  ( 
+          ( SELECT * FROM TIDATAITEM_ODS 
+                   WHERE TYPEFLAG IN (27713)
+          ) PartyDetails0
+   INNER JOIN PARTYDTLS_ODS PartyDetails1
+          ON PartyDetails1.KEY97 = PartyDetails0.KEY97 ) 
+          ON master0.PCP_PTY = PartyDetails0.KEY97
+   LEFT JOIN GFPF_ODS customer0
+          ON PartyDetails1.CUS_MNM = customer0.GFCUS1
+   INNER JOIN PRODTYPE_ODS ProductType0
+          ON master0.PRODTYPE = ProductType0.KEY97
+   INNER JOIN HVPF_ODS branch_address0
+          ON master0.INPUT_BRN = branch_address0.HVBRNM
+WHERE
+    master0.REFNO_PFIX = 'SBG' AND
+    Event0.REFNO_PFIX = 'PPC' AND
+    (Event0.STATUS <> 'c' AND
+    Event0.STATUS <> 'a')
+) FRQ on TRIM(FRQ.MASTER_REF) = TRIM(M.MASTER_REF)
+WHERE M.REFNO_PFIX = 'SBG' 
+AND E.REFNO_PFIX = 'PPC' 
+AND (E.STATUS <> 'c' AND E.STATUS <> 'a')
+AND E.REFNO_PFIX='PPC' AND E.FINISHED IS NULL AND (E.STATUS='w' OR E.STATUS='p');
+
+COMMIT;
+
+
+UPDATE TDCC A SET TFCT_SRL_NUM =(SELECT RANK1 FROM(
+SELECT B2K_ID,ROWID ROW_ID,DENSE_RANK() OVER (PARTITION BY B2K_ID ORDER BY ROWID) RANK1 FROM TDCC) B WHERE A.ROWID = B.ROWID);
+
+COMMIT;
+
+TRUNCATE TABLE TFCT;
+
+INSERT INTO TFCT
+SELECT
+B2K_ID,
+B2KID_TYPE,
+T.EVENT_TYPE,
+EVENT_SRL_NUM,
+TFCT_SRL_NUM,
+T.ENTITY_CRE_FLG,
+'N' DEL_FLG,
+T.PTRAN_BUS_TYPE,
+B.EVENT_ID CHRG_EVENT_ID, ---CASE WHEN TRIM(T1.BG_TYPE) IS NOT NULL THEN TRIM(T1.BG_TYPE) ELSE TRIM(T2.BG_TYPE) END ||'_CHGS' CHRG_EVENT_ID,
+'' CHRG_EVENT_TYPE,
+'' CHRG_COLL_TYPE,
+CR_DR_IND,
+TRAN_CRNCY_CODE,
+'' CHRG_PART_TRAN_SRL_NUM,
+TRAN_AMT TTL_SYS_CALC_CHRG_AMT,
+TRAN_AMT TTL_CHRG_TOBE_COLL_AMT,
+TRAN_AMT TTL_CHRG_DUE_AMT,
+'' TTL_CHRG_COLL_AMT,
+CASE WHEN TRIM(T1.BG_OPERATIVE_ACCOUNT_ID) IS NOT NULL THEN T1.BG_OPERATIVE_ACCOUNT_ID ELSE T2.BG_OPERATIVE_ACCOUNT_ID END OPER_ACID, -- TO BE CORRECTED
+CASE WHEN TRIM(T1.BG_CURRENCY) IS NOT NULL THEN T1.BG_CURRENCY ELSE T2.BG_CURRENCY END  OPER_CRNCY_CODE, -- TO BE CORRECTED
+--CASE WHEN TRIM(T1.BG_OPERATIVE_ACCOUNT_ID) IS NOT NULL THEN T1.BG_OPERATIVE_ACCOUNT_ID ELSE T2.BG_OPERATIVE_ACCOUNT_ID END CHRG_ACID, -- TO BE CORRECTED
+'700'||CRNCY_ALIAS_NUM||P.BACID CHRG_ACID,
+'MID' RATE_CODE,
+'1' RATE,
+'' CONV_RATE_CODE,
+'' CONV_RATE,
+'A' PAYABLE_BY,
+'N' WAIVE_FLG,
+'' WAIVER_AMT,
+'' WAIVE_REMARKS,
+'' REMARKS_CHARGES,
+'' DR_CONS_FLG,
+'' MODIFY_FLG,
+'' AMT_WITHOUT_DISCOUNT,
+'' CHRG_RPT_CODE,
+'' DEBIT_CHARGE_RCVBLE_ACCT_FLG,
+TRAN_AMT TTL_CHRG_RECEIVABLE_AMT,
+'' DEBIT_CHARGE_RECEIVABLE_ACID,
+'' ENTITY_STATUS,
+'' TRAN_PARTICULAR,
+'' TRAN_PARTICULAR_CODE,
+'' MOD_SCH_FLG,
+'' CHRG_SH_PCNT,
+'' CHRG_SPLIT_PCNT,
+'' CHRG_SPLIT_AMT,
+FREQUENCY CHRG_SPLIT_IND,
+'' PARENT_TFCT_SRL_NUM,
+'' LATER_COLL_DATE,
+TRAN_DATE START_DATE,
+DUE_DATE END_DATE,
+FREQUENCY DEF_CHRG_FREQ_TYPE,
+'' DEF_CHRG_FREQ_WEEK_NUM,
+'' DEF_CHRG_FREQ_WEEK_DAY,
+TO_CHAR(DUE_DATE,'DD') DEF_CHRG_FREQ_START_DD,
+'N' DEF_CHRG_HLDY_STAT,
+'Y' AMORT_FLG,
+'' REMIT_THROUGH_MSG_SYS,
+'' POBC_TRAN_ID,
+'' POBC_TRAN_DATE,
+'N' REFUND_FLG,
+'700' SOLID, --SUBSTR(B2K_ID,1,3) SOL_ID,
+'' VERFN_PENDING_FROM,
+'' CUST_ID,
+'01' BANK_ID,
+'SYSTEM' LCHG_USER_ID,
+SYSDATE LCHG_TIME,
+'SYSTEM' RCRE_USER_ID,
+SYSDATE RCRE_TIME,
+'' TS_CNT,
+'F' AMT_IND,
+'' TREASURY_RATE,
+'' TREASURY_REF_NUM,
+TRAN_AMT TTL_SYS_CALC_CHRG_GENE_AMT
+FROM TDCC T
+LEFT JOIN TF001 T1 ON TRIM(T1.BG_NUM)=TRIM(B2K_ID) AND T1.FUNC_CODE='A'
+LEFT JOIN TF002 T2 ON TRIM(T2.BG_NUM)=TRIM(B2K_ID) AND T2.FUNC_CODE='A'
+LEFT JOIN TBAADM.BGP B ON B.BG_TYPE=CASE WHEN TRIM(T1.BG_TYPE) IS NOT NULL THEN TRIM(T1.BG_TYPE) ELSE TRIM(T2.BG_TYPE) END AND B.BANK_ID='01'
+LEFT JOIN TBAADM.PTT P ON P.BANK_ID='01' AND P.EVENT_ID=B.EVENT_ID AND P.EVENT_TYPE='BGADD' AND P.PTRAN_BUS_TYPE='COMM'
+LEFT JOIN TBAADM.CNC C ON C.CRNCY_CODE=T.TRAN_CRNCY_CODE AND C.BANK_ID='01';
+
+COMMIT;
+
+truncate table tdcc_final;
+
+DECLARE
+
+frq number;
+total_charge number;
+frq_in_months number;
+last_ins_date date;
+CURSOR c1
+is
+select * from tdcc where DUE_DATE>=to_date(get_param('EOD_DATE'),'DD-MM-YYYY');
+
+ BEGIN
+
+FOR l_record IN c1
+LOOP   
+
+    
+   IF l_record.FREQUENCY='M' THEN
+      frq_in_months := 1;
+   ELSIF  l_record.FREQUENCY='Q' THEN
+      frq_in_months := 3;
+   ELSIF  l_record.FREQUENCY='H' THEN
+      frq_in_months := 6;
+   ELSIF  l_record.FREQUENCY='Y' THEN
+      frq_in_months := 12;
+   else 
+       frq_in_months := 1;
+   END if;
+    
+    total_charge := 0;
+    frq := 0;
+    last_ins_date := l_record.TRAN_DATE;
+    
+    while l_record.due_date > last_ins_date 
+    loop  
+    
+    if TO_DATE(get_param('EOD_DATE'),'DD-MM-YYYY') > last_ins_date then
+    last_ins_date := ADD_MONTHS(last_ins_date,frq_in_months);
+       
+       if(to_char(last_ins_date,'dd') != to_char(l_record.TRAN_DATE,'dd') and (to_char(last_ins_date,'dd') <10)) then
+        last_ins_date := last_day(ADD_MONTHS(last_ins_date,-1));
+       end if;
+    continue;
+    end if;    
+    
+       insert into tdcc_final select 
+       l_record.B2K_ID,
+       l_record.B2KID_TYPE,
+       l_record.EVENT_TYPE,
+       l_record.EVENT_SRL_NUM,
+       l_record.TFCT_SRL_NUM,
+       frq+1,
+       l_record.ENTITY_CRE_FLG,
+       last_ins_date,
+       l_record.CR_DR_IND,
+       l_record.TRAN_CRNCY_CODE,
+       l_record.TRAN_AMT,
+       l_record.TRAN_ID,
+       last_ins_date,
+       l_record.TRAN_RMKS,
+       l_record.STATUS_FLG,
+       l_record.PTRAN_BUS_TYPE,
+       l_record.DEL_FLG,
+       l_record.LCHG_USER_ID,
+       l_record.LCHG_TIME,
+       l_record.RCRE_USER_ID,
+       l_record.RCRE_TIME,
+       l_record.TS_CNT,
+       l_record.BANK_ID
+       from dual;
+       commit;
+       frq := frq+1;
+       last_ins_date := ADD_MONTHS(last_ins_date,frq_in_months);
+      
+       if(to_char(last_ins_date,'dd') != to_char(l_record.TRAN_DATE,'dd') and (to_char(last_ins_date,'dd') <10)) then
+        last_ins_date := last_day(ADD_MONTHS(last_ins_date,-1));
+       end if;
+       
+       total_charge := total_charge + l_record.TRAN_AMT;
+      end loop;  
+      
+       insert into tdcc_final select 
+       l_record.B2K_ID,
+       l_record.B2KID_TYPE,
+       l_record.EVENT_TYPE,
+       l_record.EVENT_SRL_NUM,
+       l_record.TFCT_SRL_NUM,
+       frq+1,
+       l_record.ENTITY_CRE_FLG,
+       l_record.due_date,
+       l_record.CR_DR_IND,
+       l_record.TRAN_CRNCY_CODE,
+       l_record.TRAN_AMT,
+       l_record.TRAN_ID,
+       l_record.due_date,
+       l_record.TRAN_RMKS,
+       l_record.STATUS_FLG,
+       l_record.PTRAN_BUS_TYPE,
+       l_record.DEL_FLG,
+       l_record.LCHG_USER_ID,
+       l_record.LCHG_TIME,
+       l_record.RCRE_USER_ID,
+       l_record.RCRE_TIME,
+       l_record.TS_CNT,
+       l_record.BANK_ID
+       from dual;
+       
+       commit;
+    total_charge := total_charge+l_record.TRAN_AMT;
+      
+      UPDATE TFCT t2 SET TTL_SYS_CALC_CHRG_AMT = total_charge , TTL_CHRG_TOBE_COLL_AMT = total_charge,
+       TTL_CHRG_DUE_AMT=total_charge, TTL_CHRG_RECEIVABLE_AMT=total_charge, TTL_SYS_CALC_CHRG_GENE_AMT=total_charge,END_DATE=l_record.due_date WHERE TRIM(t2.B2K_ID)=trim(l_record.B2K_ID) 
+       and TRIM(t2.TFCT_KEY_SRL_NUM) = trim(l_record.TFCT_SRL_NUM) ;    
+       
+    commit;  
+    
+    
+end loop;
+commit;
+end;
+
+COMMIT;
+
+/
+
+
+insert into tdcc_final  
+select B2K_ID, B2KID_TYPE, EVENT_TYPE, EVENT_SRL_NUM, TFCT_SRL_NUM, TDCC_KEY_SRL_NUM, ENTITY_CRE_FLG, DUE_DATE, CR_DR_IND, TRAN_CRNCY_CODE, 
+TRAN_AMT, TRAN_ID, TRAN_DATE, TRAN_RMKS, STATUS_FLG, PTRAN_BUS_TYPE, DEL_FLG, LCHG_USER_ID, LCHG_TIME, RCRE_USER_ID, RCRE_TIME, TS_CNT, BANK_ID 
+from tdcc where DUE_DATE<to_date(get_param('EOD_DATE'),'DD-MM-YYYY');
+
+COMMIT;
+
+UPDATE TDCC_FINAL SET TRAN_DATE='';
+
+COMMIT;

@@ -1,0 +1,18 @@
+========================================================================================================================================================================================== 
+****************************************************************************************************************************************************************************************** 
+interest_rates_report.sql 
+select distinct
+Y.CONTRIBRATE OPICS_CONTRIBRATE,MINT.CCY FINACLE_CCY,CASE WHEN SUBSTR(Y.CONTRIBRATE,1,3) = MINT.CCY THEN 'TRUE' ELSE 'FALSE' END MATCH_CCY,
+Y.CONTRIBRATE OPICS_CONTRIBRATE ,MINT.Type FINACLE_Type,CASE WHEN SUBSTR(Y.CONTRIBRATE,4) = MINT.Type THEN 'TRUE' ELSE 'FALSE' END MATCH_Type,
+Y.MTYEND OPICS_MTYEND, MINT.Nominal FINACLE_Nominal,CASE WHEN Y.MTYEND = UPPER(MINT.Nominal) THEN 'TRUE' ELSE 'FALSE' END MATCH_Nominal,
+R.BASIS OPICS_BASIS, MINT.Basis FINACLE_BASIS,CASE WHEN SUBSTR(R.BASIS,1,1)||'/'||SUBSTR(R.BASIS,2)  = MINT.Basis THEN 'TRUE' ELSE 'FALSE' END MATCH_BASIS,
+Y.BIDRATE_8 OPICS_BIDRATE_8,MINT.BID_RATE*100 FINACLE_BID_RATE,CASE WHEN Y.BIDRATE_8  = MINT.BID_RATE*100 THEN 'TRUE' ELSE 'FALSE' END MATCH_BID_RATE,
+Y.OFFERRATE_8 OPICS_OFFERRATE_8,MINT.OFFER_RATE*100 FINACLE_OFFER_RATE,CASE WHEN Y.OFFERRATE_8  = MINT.OFFER_RATE*100 THEN 'TRUE' ELSE 'FALSE' END MATCH_OFFER_RATE,
+Y.BPDATA OPICS_BPDATA ,MINT.Base_Date FINACLE_Base_Date,CASE WHEN Y.BPDATA = MINT.Base_Date THEN 'TRUE' ELSE 'FALSE' END MATCH_Base_Date
+FROM YCRH Y
+INNER JOIN RATE R ON R.CCY=Y.CCY
+LEFT JOIN(SELECT MINT.CCY,MINT.Type,MINT.Nominal,MINT.Basis,MINT.BID_RATE,MINT.OFFER_RATE,MNAM.Base_Date
+FROM ftabkbpd.MRS_INTRATES@ftfc MINT --ON Y.CCY = MINT.CCY AND UPPER(TRIM(Y.MTYEND)) =  UPPER(TRIM(MINT.Nominal))
+LEFT join ftabkbpd.mrs_names@ftfc MNAM on MNAM.NAME=MINT.NAME) MINT ON Y.CCY = MINT.CCY AND UPPER(TRIM(Y.MTYEND)) =  UPPER(TRIM(MINT.Nominal))
+ AND  Y.BPDATA = MINT.Base_Date
+where  y.ccy in ('BHD','CHF','GBP','KWD','OMR','QAR','EUR','SAR','AED','JPY','USD') and y.BIDRATE_8 <> 0; 

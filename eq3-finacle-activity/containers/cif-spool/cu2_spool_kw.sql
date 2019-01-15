@@ -1,0 +1,118 @@
+set head off
+set feedback off
+set term off
+set lines 1200
+set pagesize 0
+set pages 0
+set trimspool on
+spool $MIG_PATH/output/finacle/cifkw/RC002.txt
+select 
+  (
+trim(ORGKEY)||'|'||
+trim(ADDRESSCATEGORY)||'|'||
+trim(START_DATE)||'|'||
+trim(PHONENO1LOCALCODE)||'|'||
+trim(PHONENO1CITYCODE)||'|'||
+trim(PHONENO1COUNTRYCODE)||'|'||
+trim(PHONENO2LOCALCODE)||'|'||
+trim(PHONENO2CITYCODE)||'|'||
+trim(PHONENO2COUNTRYCODE)||'|'||
+trim(WORKEXTENSION)||'|'||
+trim(FAXNOLOCALCODE)||'|'||
+trim(FAXNOCITYCODE)||'|'||
+trim(FAXNOCOUNTRYCODE)||'|'||
+trim(EMAIL)||'|'||
+trim(PAGERNOLOCALCODE)||'|'||
+trim(PAGERNOCITYCODE)||'|'||
+trim(PAGERNOCOUNTRYCODE)||'|'||
+trim(TELEXLOCALCODE)||'|'||
+trim(TELEXCITYCODE)||'|'||
+trim(TELEXCOUNTRYCODE)||'|'||
+trim(HOUSE_NO)||'|'||
+trim(PREMISE_NAME)||'|'||
+trim(BUILDING_LEVEL)||'|'||
+trim(STREET_NO)||'|'||
+trim(STREET_NAME)||'|'||
+trim(SUBURB)||'|'||
+trim(LOCALITY_NAME)||'|'||
+trim(TOWN)||'|'||
+trim(DOMICILE)||'|'||
+trim(CITY_CODE)||'|'||
+trim(STATE_CODE)||'|'||
+trim(ZIP)||'|'||
+trim(COUNTRY_CODE)||'|'||
+trim(ADDRESS_LINE1)||'|'||
+trim(ADDRESS_LINE2)||'|'||
+trim(ADDRESS_LINE3)||'|'||
+trim(END_DATE)||'|'||
+trim(SMALL_STR1)||'|'||
+trim(SMALL_STR2)||'|'||
+trim(SMALL_STR3)||'|'||
+trim(SMALL_STR4)||'|'||
+trim(SMALL_STR5)||'|'||
+trim(SMALL_STR6)||'|'||
+trim(SMALL_STR7)||'|'||
+trim(SMALL_STR8)||'|'||
+trim(SMALL_STR9)||'|'||
+trim(SMALL_STR10)||'|'||
+trim(MED_STR1)||'|'||
+trim(MED_STR2)||'|'||
+trim(MED_STR3)||'|'||
+trim(MED_STR4)||'|'||
+trim(MED_STR5)||'|'||
+trim(MED_STR6)||'|'||
+trim(MED_STR7)||'|'||
+trim(MED_STR8)||'|'||
+trim(MED_STR9)||'|'||
+trim(MED_STR10)||'|'||
+trim(LARGE_STR1)||'|'||
+trim(LARGE_STR2)||'|'||
+trim(LARGE_STR3)||'|'||
+trim(LARGE_STR4)||'|'||
+trim(LARGE_STR5)||'|'||
+trim(DATE1)||'|'||
+trim(DATE2)||'|'||
+trim(DATE3)||'|'||
+trim(DATE4)||'|'||
+trim(DATE5)||'|'||
+trim(DATE6)||'|'||
+trim(DATE7)||'|'||
+trim(DATE8)||'|'||
+trim(DATE9)||'|'||
+trim(DATE10)||'|'||
+trim(NUMBER1)||'|'||
+trim(NUMBER2)||'|'||
+trim(NUMBER3)||'|'||
+trim(NUMBER4)||'|'||
+trim(NUMBER5)||'|'||
+trim(NUMBER6)||'|'||
+trim(NUMBER7)||'|'||
+trim(NUMBER8)||'|'||
+trim(NUMBER9)||'|'||
+trim(NUMBER10)||'|'||
+trim(DECIMAL1)||'|'||
+trim(DECIMAL2)||'|'||
+trim(DECIMAL3)||'|'||
+trim(DECIMAL4)||'|'||
+trim(DECIMAL5)||'|'||
+trim(DECIMAL6)||'|'||
+trim(DECIMAL7)||'|'||
+trim(DECIMAL8)||'|'||
+trim(DECIMAL9)||'|'||
+trim(DECIMAL10)||'|'||
+trim(CIFID)||'|'||
+trim(PREFERREDADDRSS)||'|'||
+trim(HOLDMAILINITIATEDBY)||'|'||
+trim(HOLDMAILFLAG)||'|'||
+trim(BUSINESSCENTER)||'|'||
+trim(HOLDMAILREASON)||'|'||
+trim(PREFERREDFORMAT)||'|'||
+trim(FREETEXTADDRESS)||'|'||
+trim(FREETEXTLABEL)||'|'||
+trim(ADDRESS_PROOF_RCVD)||'|'||
+trim(LASTUPDATE_DATE)||'|'||
+trim(BANK_ID)
+  ) 
+from cu2_o_table;
+spool off;
+exit;
