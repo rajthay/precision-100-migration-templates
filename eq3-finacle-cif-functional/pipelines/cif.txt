@@ -1,0 +1,8 @@
+extract-from-source-cif
+load-cif
+volume-check-cif
+transform-cif
+verification-pre-migration-cif
+spool-cif
+verification-post-migration-cif
+
