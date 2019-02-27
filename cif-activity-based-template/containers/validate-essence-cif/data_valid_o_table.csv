@@ -1,0 +1,60 @@
+,,
+Group,Validation condition,Exception records count
+Collateral,Collateral Code to be created,0
+CIF,Sector_code,2
+CIF,Industry type,1
+CIF,Sub sector code,2
+Loans,Nature of advance,0
+Loans,Purpose of advance,0
+CASA/OD/Loans/FD,MIS codes,0
+OD/Loans,Sanction level code,0
+OD/Loans,Sanction authority code,0
+CASA/OD ,Mode of operation code,0
+CIF,Relation code,0
+CIF,Freeze reason code,0
+CASA/OD/Loans/FD,GL_SUB_HEAD / Currency mapping,0
+CIF,Health code,0
+Stop cheque,Stop reason code,0
+Account lien,Lien reason code,0
+Demand draft,DD Issuance Bank Branch code,0
+CASA/OD ,Channel Type,0
+CIF,Salutation code,4
+CIF,Customer type,0
+CIF,Occupation,0
+CIF,Nationality,0
+CIF,Parent country,0
+CIF,Risk country,4
+CIF,Resident country,5
+CIF,Customer Rating,1
+CIF,Customer constitution,5
+CIF,Designation,10
+CIF,Place of Birth,10
+CIF,Country of Birth,0
+CIF,Segmentation class,10
+CIF,RM Code,0
+CIF,Email,2
+CIF,Phone,2
+CIF,Document ,2
+CIF,Missing Address,4
+CIF,Special Character Address,1
+CIF,Special character account notes,1
+CIF,Gender,2
+CIF,Date of Birth,3
+CIF,Statement type,1
+CASA/OD,Interest frequency,0
+OD/Loans,Asset Classification,0
+CIF,Trade License,1
+CIF,Country of incorporation,2
+CIF,POA,1
+CIF,Customer DOB GT Account open date,0
+CASA/OD/GL,Negative Value in SAAMA,0
+Stop cheque,STOPPAYMENT NULL VALUES,0
+CASA,scheme NRE but account not NRE,0
+CASA,scheme not NRE but account NRE,0
+CASA/OD/TD/Loans/GL,GL|sub|head codes not created,0
+OD/Loans,A/c Expiry Dt.> Sanc.Dt.,0
+OD/Loans,Disb amt > sanc amt,0
+OD/Loans,Transaction wrong flow code,0
+Signatures,Duplicate signature data,0
+OD/Loans,NPA Dt. > Acct. Open Dt,0
+OD/Loans,NPA_DT  NPA Dt. > Sanc. lmt Dt,0

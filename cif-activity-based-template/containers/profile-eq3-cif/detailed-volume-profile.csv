@@ -1,0 +1,103 @@
+,,,
+,Profiling category,Profile ,No of Entries
+,CIF,Total CIFs,15
+,CIF IND,No of CIF,10
+,CIF IND,Address,35
+,CIF IND,Contact,23
+,CIF IND,By customer type,15
+,CIF IND,By Location,13
+,CIF IND,Group codes,0
+,CIF IND,Identification documents,18
+,CIF IND,Financial details,6
+,CIF IND,ReKYC details,7
+,CIF NON-IND,No of CIF,5
+,CIF NON-IND,Trade License,4
+,CIF NON-IND,By Industry code,3
+,CIF NON-IND,By Location,2
+,CIF NON-IND,Group codes,2
+,CIF NON-IND,ReKYC details,3
+,CIF NON-IND,Contact details,11
+,CIF NON-IND,Address details,23
+,CIF NON-IND,Turnonver details,3
+,Liability,CASA Accounts,0
+,Liability,Cheque books,0
+,Liability,Lien,0
+,Liability,Stop cheques,0
+,Liability,Fixed deposits,0
+,Liability,Rollovers,0
+,Liability,Interest instructions,0
+,Liability,Repayment methods,0
+,Liability,Account notes,0
+,Liability,Zero balance,0
+,Liability,Standing instructions,0
+,Liability,Balance orders,0
+,Liability,Sweeps / Rev sweeps,0
+,Liability,DD/PO,0
+,Liability,TOD,0
+,Liability,Nominees,0
+,Liability,Nominated Accounts,0
+,Liability,Only Dr Interest,0
+,Liability,Only Cr Interest,0
+,Liability,Dr and Cr Interest,0
+,Liability,Std Int Definition,0
+,Liability,Custom int definition,0
+,Liability,Account preferential interest rate,0
+,Assets,Overdraft Account,0
+,Assets,Limit details,0
+,Assets,Drawing power,0
+,Assets,By product,0
+,Assets,Retail loans,0
+,Assets,Corporate loans,0
+,Assets,By product,0
+,Assets,By Location,0
+,Assets,Repayment schedules,0
+,Assets,Interest settlement instructions,0
+,Assets,Asset classification,0
+,Assets,NPA,0
+,Assets,Multi source repayments,0
+,Assets,PDC’s,0
+,Collateral,Total collaterals,0
+,Collateral,Expired collaterals,0
+,Collateral,By collateral type,0
+,Collateral,Collateral linkages,0
+,Treasury,FX Outright Deal,0
+,Treasury,Fx Spot Deals,0
+,Treasury,FX swap,0
+,Treasury,Security Buby sell,0
+,Treasury,Com loan,0
+,Treasury,Equity,0
+,Treasury,Swap,0
+,Treasury,FXOTC,0
+,Treasury,REPO,0
+,Trade,Outward Bank Guarantee Upload,0
+,Trade,Inward Bank Guarantee Upload,0
+,Trade,Upload Bank Guarantee Events,0
+,Trade,Upload Documentary Credit Events,0
+,Trade,Export Bills Upload,0
+,Trade,Import Bills Upload,0
+,Trade,Upload Foreign Bill Events,0
+,Trade,Contingent liability for LC,0
+,Trade,Contingent liability for BG,0
+,Trade,Contingent liability for Bill,0
+,GL,Office Accounts,0
+,GL,Office Account zero balance,0
+,GL,Office accounts with balance,0
+,Products,No of account types,0
+,Products,No of customer types,2
+,CIF,No of customer with proper risk rating,10
+,CIF,No of customer with proper re-kyc date,8
+,CIF,No of CIF with Email,8
+,CIF,No of CIF with join party ,5
+,CIF,No  of CIF with related party creation,3
+,CASA/OD,Dormant account,0
+,CASA/OD,Total Account freeze,0
+,CASA/OD,Dr Freeze,0
+,CASA/OD,Cr Freeze,0
+,CASA/OD,Inactive Account,0
+,CASA/OD,MIS Special conditions count,0
+,CASA/OD,Unused currencies,0
+,CASA/OD,No of returned cheques,0
+,CIF,CIF not migrated,0
+,Accounts,Accounts not migrated,0
+,GL,Office accounts unmapped,0
+,Products,Products unmapped,0
