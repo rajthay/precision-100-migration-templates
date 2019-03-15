@@ -1,3 +1,5 @@
+source $PRECISION100_FOLDER/conf/.sqlloaderenv
+
 mkdir -p $SQLLDR_INPUT
 echo "Extracting table GFPF"
 cp $CONTAINER_FOLDER/$CONTAINER/GFPF.dat $SQLLDR_INPUT
