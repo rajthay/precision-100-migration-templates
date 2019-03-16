@@ -1,0 +1,2 @@
+10,party_common,map-file
+20,party_person_details,map-file
