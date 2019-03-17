@@ -1,0 +1,4 @@
+10,o_party_common,length-validator
+20,o_party_person_details,length-validator
+30,v_o_party_common_l,spool
+40,v_o_party_person_details_l,spool
