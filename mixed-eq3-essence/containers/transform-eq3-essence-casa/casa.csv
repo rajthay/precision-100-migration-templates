@@ -1,0 +1,223 @@
+Column_Name,DataType,Input,MaxLength,Description,Default,Mapping Type,Mapping Value
+Customer Number,VARCHAR,Input,,Customer number of the Account owner,,PASSTHRU,gfpf.gfcpnc
+Account Number,VARCHAR,Input,,The account number or ID can be generated when an instance of an account product is created at runtime,,PASSTHRU,scpf.scab||scpf.scan||scpf.scas
+Sub Product Id,VARCHAR,Input,60,BFUB sub-product id to which the Account is mapped to. This mapping of legacy product/account-type to BFUB product and sub-product should be done prior to Account migration.,,,
+Productid,VARCHAR,Input,16,The product (account type) to which the account belongs. Make sure to map legacy product/account type to BFUB Product and specify the BFUB Productid here.,,PASSTHRU,scpf.scact
+Branch,VARCHAR,Input,,BFUB Branch sort code to which the Account belongs,,PASSTHRU,scpf.scab
+ISO Currency Code,VARCHAR,Input,,The currency of the account.,,PASSTHRU,scpf.scccy
+Pseudonym,VARCHAR,Default,50,"Pseudo Name.  Arbitrary alternative account reference, that in combination with a separate Branch Sort Code can be used to post to an internal account. This means that generic business processes can be written for all branches and departments. This is no longer used.",,,
+Account Name,VARCHAR,Input,60,"Account name if one is available; Usually mapped from the Customer Short Name in any account opening business processes. In the reference implementation, having the customer name at this level saves a join to the Customer table for reports.",,PASSTHRU,scpf.scshn
+Account Status,VARCHAR,Input,20,Account status,Activated,CONSTANT,Activated
+Acc Rights Indicator,DECIMAL,Input,,"Possible values and their meaning are: -1 -> Password required for posting and enquiry, 0 -> No password required, 1 -> Password required for posting, 2 -> Account stopped. No posting or enquiry allowed, 3 -> Account stopped. Password required for posting and enquiry, 4 -> No debits allowed, 5 -> No debits. Password required to override, 6 -> No credits allowed, 7 -> No credits. Password required to override, 8 -> Password required for enquiry",0,CONSTANT,0
+Cleared Balance,DECIMAL,Input,,"Account's cleared balance. Every non-zero in-value financial posting message updates the cleared balance, either immediately or after being routed. A forward-valued transaction will NOT update this until the transaction comes into value and is cleared. (Scheduled Posting). ",,PASSTHRU,"(scpf.scbal-(scpf.scsum1+scpf.scsum2))/power(10,c8pf.c8CED)"
+Booked Balance,DECIMAL,Input,,"Account's booked balance. Every non-zero financial posting message updates the book balance, either immediately or after being routed. A back, same or forward-valued transaction will update this.",,PASSTHRU,"scpf.scbal/power(10,c8pf.c8CED)"
+Blocked Balance,DECIMAL,Input,,Blocked Balance,,PASSTHRU,"scpf.scrba/power(10,c8pf.c8CED)"
+Cheque Deposit Balance,DECIMAL,Input,,"Cheque Deposit Balance  The Cheque Deposit Feature maintains the Cheque Deposit Balance on an account.  A cheque deposit balance is used to record the amounts deposited at the counter that have yet to be verified, such as not-on-us cheques. ",,PASSTHRU,"(scpf.scsum1+scpf.scsum2)/power(10,c8pf.c8CED)"
+Last Interest Accural Date,DATE,Input,,Last Interest Accrual Date; the date till which the intrest is accrued and stored on the Account. This is the most important date on the account. It is the value date of the most recent in-valued transaction. Whether there is a Debit Interest and/or Credit Interest feature is irrelevant.,,,business_date-1 or s5pf.s5lcdc
+Accrued Credit Interest,DECIMAL,Input,,The amount of credit interest currently accrued and yet to be applied/capitalised to the account by an Interest Application.,,PASSTHRU,"case  
+  when s5am1c >= 0 then abs(to_number(((s5am4c)/POWER(10,c8pf.C8CED)) + ((s5pf.s5am1c)/POWER(10,c8pf.C8CED))))
+  else abs(to_number((s5am4c)/POWER(10,c8pf.C8CED))) end"
+Debit Accrued Interest,DECIMAL,Input,,Debit Accrued Interest  The amount of debit interest currently accrued and yet to be applied/capitalised to the account by an Interest Application.,,PASSTHRU,"case
+     when s5am1d <= 0 then abs(to_number(((s5am4d)/POWER(10,c8pf.C8CED)) + ((s5pf.s5am1d)/POWER(10,c8pf.C8CED))))
+     else abs(to_number((s5am4d)/POWER(10,c8pf.C8CED))) end"
+Credit Limit,DECIMAL,Input,,Credit limit (which can be floor or ceiling based on LIMITINDICATOR). Used in conjunction with LIMITEXCESSACTION and LIMITINDICATOR fields.,,,
+Debit Limit,DECIMAL,Input,,Debit limit (which is always floor). Used in conjunction with LIMITEXCESSACTION and LIMITINDICATOR fields.,,PASSTHRU,scpf.scodl
+Limit Excessaction,INTEGER,Input,,"Limit Excess Action This defines what should happen when either of credit/debit limit is exceeded. Following are the possible values 0 - Do Not Allow Excess,1 - Allow Excess,2 - Allow Excess with Supervisor Authorization.",,CONSTANT,0
+Limit Indicator,INTEGER,Input,,"Limit Indicator whcih indicates what kind of limit checking is applicable for the account. It’s values can be: 0 - Both Cr and Dr Limits Not Applicable,1 - Dr Limit Applicable, not Cr Limit,2 - Cr Limit as Floor,Dr Not Effective,3 - Cr Limit as Ceiling, Dr Limit as Floor.",,CONSTANT,0
+Limit Review Date,DATE,Input,,Used for reporting limits that should be reviewed. Account Limit Review Expiry.,,PASSTHRU,scpf.scled
+Limit Expiry Date,DATE,Input,,Used for reporting expiring limits. Account Limit Review Expiry.,,PASSTHRU,scpf.scled
+Is Joint Account,VARCHAR,Input,1,true or false. Indicates whether there is more than one person on this account,N,PASSTHRU,N
+Account Open Date,DATE,Input,,Open Date.  The date the account instance was created.,,PASSTHRU,scpf.scoad
+Account Opened By User,VARCHAR,Default,30,Opened By User.  Mapped to the global tag Username when the static data create is performed.,superit,CONSTANT,superit
+Last Static Amendement Date,TIMESTAMP,Input,,The last time when any static attributes of the account were modified,Context.MigrationDate,PASSTHRU,scpf.scdlm
+Account Amended By User,VARCHAR,Default,30,Mapped to the global tag Username when any static data creates and updates are performed.,superit,CONSTANT,superit
+Last Transaction Date,DATE,Input,,The business date of the last financial transaction. This may not be the same as the Last Interest Accrual Date,,PASSTHRU,scpf.scdle
+Is Account Stopped,VARCHAR,Generate,1,Stopped - Boolean.  True or false. Checked in the process method of this feature when a posting is attempted.,N,,
+Account Stopped By User,VARCHAR,Default,30,"Stopped By User.  Mapped to the global tag Username, the bank user who initiated the stop on the account.",,,
+Account Stop Date,DATE,Input,,Stop date.  The date the account was stopped from having financial postings made to it.,,,
+Account Stop Reason,VARCHAR,Input,30,Stop Reason.  A description of the stop on the account.,,,
+Account Stop Code,VARCHAR,Input,10,Stop Code.  An arbitrary code used as a reason why the account was stopped.,,,
+Is Account Closed,VARCHAR,Generate,1,true or false. Indicates whether the account is closed or not. Checked in the process method of this feature when a posting is attempted.,N,,
+Account Closure Date,DATE,Input,,The date the account was closed,,PASSTHRU,scpf.sccad
+Dormancy Feature Id,VARCHAR,Sequence,,Surrogate key to uniquely identify an entry in the table,,,
+Dormancy Status,VARCHAR,Input,1,true or false indicating dormancy status of the account,N,PASSTHRU,scpf.SCAI20
+Date Of Dormancy,DATE,Input,,The date the account went dormant,,,
+Dormant Reactivation Date,DATE,Input,,Date when the the dormant account was changed to active,,,
+Last Active Transaction Date,DATE,Input,,last active transaction date before the account went into Dormancy,,PASSTHRU,scpf.scdle
+Minimum Opening Balance,DECIMAL,Default,,Minimum Opening Balance.  Not currently used on this feature. Use Customer Limits (credit floors).,,,
+Lowest Balance,DECIMAL,Default,,Lowest balance (Not currently used),,,
+Lowest Balance Date,DATE,Default,,Lowest balance date (Not currently used),,,
+Pass Book Indicator,VARCHAR,Default,1,Paasbook Indicator.  Not currently used.,N,,
+Fee Wave Indicator,VARCHAR,Input,1,True or false. Indicates whether the Service Fee Feature or business processes should attempt fees and charges or not.,N,,
+Limitref2,VARCHAR,Default,30,Arbitrary limit codes to be checked when the Customer Limits functionality is in operation. There can be 5 limit references for an account LIMITREF1 - 5.,,,
+Limitref3,VARCHAR,Default,30,Arbitrary limit codes to be checked when the Customer Limits functionality is in operation. There can be 5 limit references for an account LIMITREF1 - 5.,,,
+Limitref4,VARCHAR,Default,30,Arbitrary limit codes to be checked when the Customer Limits functionality is in operation. There can be 5 limit references for an account LIMITREF1 - 5.,,,
+Limitref5,VARCHAR,Default,30,Arbitrary limit codes to be checked when the Customer Limits functionality is in operation. There can be 5 limit references for an account LIMITREF1 - 5.,,,
+Last Credit Limit Change Date,DATE,Default,,The last time the account’s credit limit was changed,,,
+Last Debit Limit Change Date,DATE,Default,,The last time the account’s debit limit was changed,,,
+Tax Indicator Credit,VARCHAR,Input,5,Tax code to indicate applicable tax slab. Should be a valid value in TaxRates table.,,,
+Tax Indicator Debit,VARCHAR,Default,5,Tax on Debits -- Currently not used,,,
+Perouterprofileid,VARCHAR,Default,4,PE Router Profile ID This dictates which posting engine service will process the instance of the account product when a financial posting message is received by the Posting Engine step/fatom.  ‘0000’ or blank indicates any posting messages will be direct,,,
+Standing Order,INTEGER,Default,,,,,
+Service Fee,INTEGER,Default,,Account Level Service Fee,,,
+Taxation,INTEGER,Default,,,,,
+Versionnum,INTEGER,Default,,"Used for internal purpose, for optimistic locking.",,,
+Account Style,VARCHAR,Default,5,"Account Style. Used for account classification, set this up if this feature is going to be used by the Bank. Entries in CodeTypes need to be done for AccountStyles so this should be taken into consideration while implementing this feature.",Context.defaultAccountStyle,,
+Charge Funding AccountId,VARCHAR,Input,20,Charge Funding Account,,,
+Temp Account Limit,DECIMAL,Default,,Temporary Account Limit.,,,
+Acctranscounter,INTEGER,Default,,Running Transaction number against all transaction for an Account; need to be extracted from legacy if such number is avaiable. Migration of this field would depend on the historical transactions migration strategy.,2,,
+BankStatementFeature,VARCHAR,Sequence,30,This is automatically generated when an instance of the account is created,,,
+Transactionsperpage,INTEGER,Default,,"Integer value. The number of transactions per printable page for the product. When this is exceeded, and there is a page full condition, a new page number is incremented. This is used when page-full statement feature is used; set in accordingly in consulation with the Bank.",25,,
+Currentpage,INTEGER,Default,,The current statement page number. This is updated the Transactions Per Page has been exceeded or when it is about to produce a statement in an update mode. The latter prevents the Posting Engine from using the same page number while the statement proce,2,,
+Currentsrnumber,INTEGER,Default,,"The individual number of the transaction within the page, in the sequence it was physically posted to the Transaction table. Reset to 1 when the page is full. I.e. when the Transactions Per Page have been reached.",,,
+Pagefull,INTEGER,Default,,"Page Full 0 or 1. 0 -> Page Full statements not used for this account; 1 -> Page full statements used for this account. If this value is set, and the Transactions Per Page is exceeded, then the feature automatically produces a statement file of transactions in a comma separated format during posting.",0,,
+Periodic,INTEGER,Default,,Periodic 0 or 1. 1 = Periodic statements allowed 0= Periodic statements not allowed. This field is currently not being used by the reporting module.,1,,
+Adhoc,INTEGER,Default,,0 or 1.  1 = Adhoc/Interim statements allowed  0 = Adhoc/Interim statements not allowed. Default it to 1 to indicate ad-hoc statements for all accounts.,1,,
+Last Statement Number,INTEGER,Default,,"Per statement run for the account, this is the last run number. I.e. not a page number.",1,,
+Last Statement Page Number,INTEGER,Default,,The last page number produced in an update mode; used when page-full statements are in use.,1,,
+DefaultDate,TIMESTAMP,Default,,Date to be defaulted,Context.MigrationDate,,
+Frequencyperiodcode,VARCHAR,Input,,The frequency for automatically producing periodic statements. It usually matches what the Scheduler uses.,N,PASSTHRU,scpf.SCSFC
+Frequencyperiodunit,INTEGER,Input,,An integer representing the cycle of the above Periodic Code. i.e. ‘M2’ = Bi-Monthly ‘M3’ can also represent ‘Q1’ quarterly. ‘D7’ = Weekly.,1,,
+Statement Day,INTEGER,Input,,0-31. The day on which a periodic statement should be produced when an automatic business process has been scheduled to produce details for statements.,,,derive basis of SCSFC
+Statement Month,INTEGER,Input,,"1-12. When the Frequency Period Code is greater than ‘M’, this is the cycle month for producing the statement.",0,,derive basis of SCSFC
+Number Of Statements,DECIMAL,Default,,No. of Statements to print.,1,,
+AccountStatementConfigId,VARCHAR,Input,20,Statement Config id. Foreign key of Account statenment config table. Read the configuration for the account and stamp here,,,
+Statement Allowed For Dormant,VARCHAR,Default,1,Flag to allow statement for dormant accounts or not.,N,,
+Statement Print Day,VARCHAR,Default,5,Statement Print day in case of non working day.,6017,,
+Supervisor Reversal,VARCHAR,Default,1,Flag tell whether to statement a reversal or not for the account.,N,,
+Broughtfwdbalance,DECIMAL,Default,,Brought forward balance from the previous statement.,,,
+Is Statement Generated,VARCHAR,Default,1,Decides whether to generate statement or not for a particular date.,N,,
+AccPortMap,VARCHAR,Sequence,30,AccountPortMap Id,,,
+Relationshiptype,VARCHAR,Default,20,"For Joint Accounts this determines The relationship between the customers (i.e. Second, Third)",,,
+Primarycustindicator,VARCHAR,Default,1,For Joint Accounts this determines if the customer is the primary customer (there must always be a Primary Customer),Y,,
+BalanceSheetFeature,VARCHAR,Sequence,20,This is automatically generated when an instance of the account is created,,,
+BalSheet Debit Nominal Code,VARCHAR,Input,15,An arbitrary code that represents where on the Balance Sheet Report the account should be consolidated when the balance selected is a debit/asset.,,,
+BalSheet Debit Cost Center Code,VARCHAR,Input,15,"An arbitrary code, sometimes mapped with the Branch Sort Code of the Account in the Reference Implementation so that a Balance Sheet can be produced by branch.",,,
+BalSheet Debit Cost Type,VARCHAR,Default,15,An arbitrary code to produce further analysis for the balance sheet.,,,
+BalSheet Credit Nominal Code,VARCHAR,Input,15,An arbitrary code that represents where on the Balance Sheet Report the account should be consolidated when the balance selected is a credit/liability.,,,
+BalSheet Credit Cost Center Code,VARCHAR,Input,15,"An arbitrary code, sometimes mapped with the Branch Sort Code of the Account in the Reference Implementation so that a Balance Sheet can be produced by branch.",,,
+BalSheet Credit Cost Type,VARCHAR,Default,15,An arbitrary code to produce further analysis for the balance sheet.,,,
+ProfitLossFeature,VARCHAR,Sequence,20,Surrogate key to uniquely identify an entry in ProfitLoss table,,,
+ProfitLoss Nominal Code,VARCHAR,Input,15,An arbitrary code that represents where on the ProfitAndLoss Report the account should be consolidated,,,
+ProfitLoss Cost Centre Code,VARCHAR,Input,15,"An arbitrary code, sometimes mapped with the Branch Sort Code of the Account in the Reference Implementation so that a ProfitAndLoss can be produced by branch.",,,
+ProfitLoss Cost Type,VARCHAR,Default,15,An arbitrary code to produce further analysis of ProfitAndLoss report,,,
+Retained Earnings Acc,VARCHAR,Default,20,,,,
+CreditInterestFeature,VARCHAR,Sequence,30,Primary Key  This is automatically generated when an instance of the account is created.,,,
+Credit Base Code,VARCHAR,Input,8,Base Code  The Interest Base Code used for retrieving the base interest rate. The Interest Base Codes in BankMaster Plus are arbitrary strings.,,,
+Credit Interest Rate,DECIMAL,Input,14,"Credit Interest Rate  The effective rate that credit interest is to be accrued at. If no Credit Base Code and Credit Interest Margin is provided, this rate is used as a fixed rate.",,,s5pf
+Credit Interest Margin,DECIMAL,Input,14,Credit Interest Margin  This is added(subtracted) to the base interest rate returned from the Interest Base Code row found for the Credit Base Code above. It is a signed rate.,,,
+Last Credit Rate Change Date,DATE,Default,,"Last Credit Rate Change Date  The last time the credit interest rate was changed via Account Rate Change, a Base Rate Change or a Tiered Rate Change was posted to the account.",,,
+Previous Accured Credit Interest,DECIMAL,Default,,Previous Credit Accrued Interest,,,
+Last Interest Applied CR,DECIMAL,Input,,Last Credit Interest Applied  The amount of credit interest applied on the Last Interest Application Date. This includes any interest paid away.,,,
+Last CR Int Application Date,DATE,Default,,Last Interest Application Date  The last time an Interest Application posting was performed on the account for credit interest.,,,
+Interest Base Days CR,INTEGER,Input,,"Interest Base Days CR  e.g. 360, 365. This is the lowest level where the year days can be specified.",0,,
+Interest Rate Basis CR,INTEGER,Input,,"Rate basis defines the period to be used for Interest calculation, Like Actual/360, Actual/365, 30/360 etc.",0,,
+Interest Method CR,INTEGER,Input,,"Credit Interest Method: 0-Normal interest calculation, 1-Discount Method Use the Nominal Discounted Principal CR not the Cleared Balance, 5-Savings minimum balance method",0,,
+Interest Accrual Method CR,INTEGER,Input,,Interest accrual method,Normal,,
+Nominal Discounted Principal CR,DECIMAL,Input,,"Nominal Discounted Principal  When the Interest Calculation Method is 1, this is always the balance to use for calculating credit interest. It can represent a nominal or face value amount at account opening.",,,
+Frequency Period Code CR,VARCHAR,Input,,Frequency Period Code CR  The frequency for automatic credit Interest Applications. Mandatory for accounts with CR Int.,Not Applicable,,
+Frequency Period Unit CR,INTEGER,Input,,Frequency Period Unit CR  An integer representing the cycle of the above Periodic Code. i.e. ‘M2’ = Bi-Monthly ‘M3’ can also represent ‘Q1’ quarterly. ‘D7’ = Weekly. Mandatory for accounts with CR Int.,,,
+Application Day CR,INTEGER,Input,,Application Day CR 0-31. The preferred day for automatically applying the credit accrued interest. The BankMaster Plus Reference Implementation uses scheduled daily business processes to check if the current business day equals this value and apply the i,,,
+Application Month CR,INTEGER,Input,,"Application Month CR  0-12. The preferred month for automatically applying the credit accrued interest. Used for a period cycle other than monthly. I.e. This is not relevant for monthly application, unless the month in which a new account is opened is no",,,
+CR Int Nominal Code,VARCHAR,Input,15,"Nominal Code  An arbitrary code that represents where in the Profit & Loss Report any interest paid or payable should be consolidated. The BankMaster Plus Reference Implementation uses the Nominal Codes table to hold all arbitrary codes, whether nominal ",,,
+CR Int Cost Centre,VARCHAR,Input,15,Cost Centre  An arbitrary code to use to take the accrual or application of interest into a Profit & Loss account. Sometimes mapped with the Branch Sort Code of the Account in the Reference Implementation.,,,
+CR Int Payaway Account,VARCHAR,Input,20,"Payaway CR Account  This is the account number/ ID to which any interest accrued is to be applied/capitalised instead of the account with the Credit Interest Feature. The feature will invoke a Normal Financial Posting to credit this account, and will pos",,,
+Calculated CR Interest Rate,DECIMAL,Default,,Calculated Interest Rate,,,
+Credit Interest Rate Cap,DECIMAL,Default,,Interest Rate Cap,,,
+Credit Interest Rate Collar,DECIMAL,Default,,Interest Rate Collar,,,
+WHT Applicable,VARCHAR,Input,1,Flag to indicate whether WHT is applicable or not,N,,
+WHT Calc Method,VARCHAR,Input,1,"To store the method type for calculating WHT.0 - Apply on all credit interest transactions, 1 - Apply on all credit interest transactions if excess of threshold, 2 - Apply on all credit interest transactions excess of threshold during accounting period", ,,
+YTD Interest,DECIMAL,Input,,To store YearToDate interest for accounting period,,,
+Is WHT Thresh Crossed,VARCHAR,Default,1,"Is WHT threshold breached for Customer Level Method 2 ?. Possible  Values : Y - Yes, N - No.
+",N,,
+Last CR Int Rate Mod DtTm,TIMESTAMP,Default,,This column represents the date and time of  the new interest rate modification.(For IRC Module),Context.MigrationDate,,
+Int Rate Chg Txn Cd,VARCHAR,Default,20,This column represents the transaction code used for the rate change transaction.(For IRC Module),,,
+Int Rate Chg Txn Cd Desc,VARCHAR,Default,100,This column represents the transaction description of the rate change.(For IRC Module),,,
+DebitInterestFeature,VARCHAR,Sequence,30,Primary Key This is automatically generated when an instance of the account is created.,,,
+Debit Base Code,VARCHAR,Input,8,Debit Base Code The Interest Base Code used for retrieving the base interest rate. The Interest Base Codes in BankMaster Plus are arbitrary strings. Any Margin is added(subtracted) to the rate returned to produce the Credit Interest Rate.,,,
+Debit Interest Margin,DECIMAL,Input,,Debit Interest Margin This is added(subtracted) to the base interest rate returned from the Interest Base Code row found for the Debit Base Code above. It is a signed rate.,,,
+Debit Interest Rate,DECIMAL,Input,,"Debit Interest Rate The effective rate that debit interest is to be accrued at. If no Debit Base Code and Debit Interest Margin is provided, this rate is used as a fixed rate.",,,
+Interest Base Days DR,INTEGER,Input,,"Interest Base Days DR e.g. 360, 365. This is the lowest level where the year days can be specified. The next level is at Interest Base Code level. The top level is at Currency level.",,PASSTHRU,c5pf.c5idbd
+Interest Rate Basis DR,INTEGER,Input,,"Rate basis defines the period to be used for Interest calculation, Like Actual/360, Actual/365, 30/360 etc. Currently this is generated as Actual by Base days, change the field to input when you want to use other kids of Rate basis.",0,,
+Interest Method DR,INTEGER,Input,,Interest Method DR  0 = Normal - Use interest base days 1 = Discount Method - Use the Nominal Discounted Principal DR not the Cleared Balance 2 = Annuity Method - 30/360 on Reducing & Cleared Balances 3 = Annuity Method - as 2 but treat partial accrual d,0,,
+Interest Accrual Method DR,INTEGER,Input,,"Currently only normal method (0) is available, enhance this when Annuity methods are implemented in BFUB",Normal,,
+Bal Type for DR Int Cal,VARCHAR,Generate,,Indicates what balance is used for intrest calculation for loans. Possible values are A (Int calculated on Actual outstanding balance) or S (Int calculated on Schedule balance).,A,,
+DR Product Type,VARCHAR,Generate,,Flag to to distinguish loans and limit based products for Penalty interest calculation. 1 for Loan and 2 for Limits.,1,,
+Penalty Interest,SMALLINT,Default,,Penalty Interest?  0 or 1. 1 = This is a Penalty Interest Debit Interest Feature on loan products or the Cash Balance Debit Interest Feature for Credit Card products and is the second instance of the debit interest feature for the account.,0,,
+DR Int Nominal Code,VARCHAR,Input,15,"Nominal Code  An arbitrary code that represents where in the Profit & Loss Report any interest received or receivable should be consolidated. The BankMaster Plus Reference Implementation uses the Nominal Codes table to hold all arbitrary codes, whether n",,,
+DR Int Cost Centre,VARCHAR,Input,15,Cost Centre  An arbitrary code to use to take the accrual or application of interest into a Profit & Loss account. Sometimes mapped with the Branch Sort Code of the Account.,,,
+Payaway DR Account,VARCHAR,Input,20,"Payaway DR Account  This is the account number/ ID to which any interest accrued is to be debited from instead of the account with the Debit Interest Feature. The feature will invoke a Normal Financial Posting to debit this account, and will post a zero ",,,
+Frequency Period Code DR,VARCHAR,Input,,Frequency Period Code DR The frequency for automatic debit Interest Applications. It usually matches what the Scheduler uses. Interest Applications can be scheduled for individual accounts although the BankMaster Plus Reference Implementation uses schedu,N,,
+Frequency Period Unit DR,INTEGER,Input,,Frequency Period Unit DR  An integer representing the cycle of the above Periodic Code. i.e. ‘M2’ = Bi-Monthly ‘M3’ can also represent ‘Q1’ quarterly. ‘D7’ = Weekly.,,,
+Application Day DR,INTEGER,Input,,Application Day DR  0-31. The preferred day for automatically applying the Debit accrued interest. The BankMaster Plus Reference Implementation uses scheduled daily business processes to check if the current business day equals this value and apply the i,,,
+Application Month DR,INTEGER,Input,,"Application Month DR  0-12. The preferred month for automatically applying the Debit accrued interest. Used for a period cycle other than monthly. I.e. This is not relevant for monthly application, unless the month in which a new account is opened is not",,,
+Nominal Discounted Principal DR,DECIMAL,Input,,"Nominal Discounted Principal When the Interest Calculation Method is 1, this is always the balance to use for calculating debit interest. It can represent a nominal or face value amount at account opening, where the current value of the account (i.e. cle",,,
+Last Interest Applied DR,DECIMAL,Input,,Last Debit Interest Applied The amount of debit interest applied on the Last Interest Application Date. This includes any interest paid away.,,,
+Last DR Int Application Date,DATE,Input,,Last Interest Application Date  The last time an Interest Application posting was performed on the account for debit interest.,,,
+Last Debit Rate Change Date,TIMESTAMP,Default,,"Last Debit Rate Change Date The last time the debit interest rate was changed via Account Rate Change, a Base Rate Change or a Tiered Rate Change was posted to the account.(Data Type change for IRC Module)",Context.MigrationDate,,
+Previous Accrued DR Interest,DECIMAL,Default,,Previous Debit Accrued Interest ( Not used),,,
+Last Penalty Balance,DECIMAL,Default,,Last Penalty Balance  This is used when the Penalty Interest attribute = 1. A Penalty Interest Debit Interest Feature is usually the second instance of the debit interest feature for a loan account product or a credit card product. In the Reference Imple,,,
+Last Penalty Accrual,DATE,Default,,Last Penalty Accrual Date This is used when the Penalty Interest attribute = 1. A Penalty Interest Debit Interest Feature is usually the second instance of the debit interest feature for a loan account product or credit card product. In the Reference Imp,,,
+Original Nominal Code,VARCHAR,Default,15,Original Nominal Code  This is the Nominal Code in the lending solution when a loan became a bad debtor and had its Nominal Code swapped with that of interest in suspense from the Bad Debt Provisions table. ,,,
+Previous Cash Balance,DECIMAL,Default,,Previous Cash Balance,,,
+Calculated DR Interest Rate,DECIMAL,Default,,Calculated Interest Rate,,,
+Debit Interest Rate Cap,DECIMAL,Default,,Interest Rate Cap,,,
+Debit Interest Rate Collar,DECIMAL,Default,,Interest Rate  Collar,,,
+Last DR Int Rt Mod Dttm,TIMESTAMP,Default,,This column represents the date and time of  the new interest rate modification.(For IRC Module),Context.MigrationDate,,
+Int Rate Chg Txncd,VARCHAR,Default,3,This column represents the transaction code  used for the rate change transaction.(For IRC Module),,,
+Int Rate Chg Txn Cddesc,VARCHAR,Default,100,This column represents the transaction description of the rate change.(For IRC Module),,,
+UB Int Rate Chg Effective Flag,VARCHAR,Generate,2,"This represents the interest rate change effective flag, which means when the new interest rate will be effective.The values can  be VD - Value Date ,RD - Repayment Date.
+No Blanks.'VD' indicates Normal Movement Account & 'RD' indicates Loan Accounts.",,,
+Ub APR FormulaId,VARCHAR,Default,20,Column for APR formula ID from generic code.,,,
+Annual Perecentage Rate,DECIMAL,Default,,Column for APR value,,,
+Shadowintappdatedr,DATE,Default,,Shadow Int.App. Date Dr,,,
+Shadowintappdatecr,DATE,Default,,Shadow Int.App. Date Cr,,,
+Shadowlastcrlimitchangedate,DATE,Default,,Shadow Last Credit Limit Change Date,,,
+Shadowlastdrlimitchangedate,DATE,Default,,Shadow Last Debit Limit Change Date,,,
+ShadowFeature,VARCHAR,Sequence,30, This is automatically generated when an instance of Account is created.,,,
+Previous Opening Cleared Balance,DECIMAL,Default,,"Previous Opening Cleared Balance  The previous closing cleared balance after a Daily Audit. (Includes all in-value transactions for the previous audit, back and same-day value (but not delayed postings).",,,
+Previous Opening Booked Balance,DECIMAL,Default,,"Previous Opening Booked Balance  The previous closing book balance after a Daily Audit. (Includes all transactions for the previous audit, back, same and forward-valued (but not delayed postings).",,,
+Last Audit Time,TIMESTAMP,Default,,Last Audit Time  The Date/Time of the last Daily Audit Step in update mode.,Context.LastAuditTime,,
+Is Bank Cheque,VARCHAR,Default,1,Flag to indicate Bank cheque,N,CONSTANT,N
+Gen Int Stmt,VARCHAR,Default,1,Flag to indicate the statement should be generated or not. It should be initialized to No.,N,CONSTANT,N
+Gen Int Stmt Non Working Day,VARCHAR,Default,1,Flag to indicate if interest statement need to be generated on non-working day,N,CONSTANT,N
+Int Stmt Freq,VARCHAR,Default,1,Frequency on which the interest statement needs to be generated,N,CONSTANT,N
+PenaltyInterestCostCentreCode,VARCHAR,Input,15,Cost Centre  An arbitrary code to use to take the accrual or application of interest into a Profit & Loss account. Sometimes mapped with the Branch Sort Code of the Account.,,,
+PenaltyInterestRateCap,DECIMAL,Default,,represents the Penalty Interest Cap for the Account,,,
+PenaltyInterestRateCollar,DECIMAL,Default,,represents the Penalty Interest Collar for the Account,,,
+PI_LastApplicationDate,TIMESTAMP,Input,,Last PI Application Date for movement   and loan accounts.,Context.MigrationDate,,
+PI_NextApplicationDate,TIMESTAMP,Input,,Next PI Application Date for movement and load accounts.,Context.MigrationDate,,
+PenaltyCalculationMethodType,VARCHAR,Default,10,"It stores the Penalty Interest Calculation method  which is defaulted from the Profile at the time of
+account creation. The valid values for this column are: METHOD1 (Default), METHOD2 and  METHOD3.",,,
+PenaltyGraceDays,INTEGER,Default,,No of Grace days given to customer before accruing PI.,,,
+LowestMonthlyBal,DECIMAL,Input,,"Lowest credit balance for the month which is used to calculate credit interest using Savings minimum balance method. Needs to be provided for only Savings min balance product accounts, if migration is happening in the middle of the month.",,,
+LastSavMinBal_IntAccrualDate,DATE,Input,,Date of last interest accrual for savings minimum balance kind of accounts.,,,
+Joint Customer Tab ID,VARCHAR,Sequence,,The Id Generation for joint customers,,,
+Joint Customer Number,VARCHAR,Input,,Joint Customer Number. Comma seperated values if more than one joint customer,,,
+DefaultUser,VARCHAR,Default,,Name of the user to be defaulted for the authorisations,superit,CONSTANT,superit
+AccRightIndicatorChangedReason,VARCHAR,Default,,Reason for changing the account rights indicator,,,
+AmountTenorRateID,VARCHAR,Input,,Applicavle only for fixed deposits. Stamp the corresponding tenor rate id from from amount and tenor rate configuration table(UBTB_AMTTENORRATE),,,
+IndustryCode,VARCHAR,Input,,Industry Code from Generic Code,,,
+NextIntApplicationDateCR,DATE,Input,,Next Credit Interest Application Date,,PASSTHRU,s5pf.s5ncdc
+NextIntApplicationDateDR,DATE,Input,,Next Debit Interest Application Date,,PASSTHRU,s5pf.s5ncdd
+Exchange Rate Mode,VARCHAR,Input,50,Stores the mode/type of exchange rate which should be picked for cash or remittance transactions,,,
+Check Minimum Balance Required,VARCHAR,Input,1,Minimum balance check flag,N,,
+Is Booked in Fusion Risk,VARCHAR,Input,1,Indicates whether Account deal is booked in Fusion Risk,N,,
+Credit Interest Margin Type,VARCHAR,Input,30,Credit interest margin type. Either fixed(FLATVALUE) or percentage(PERCENT) margin,Flat Value,,
+Credit Interest Margin Enabled,VARCHAR,Input,1,Indicates whether Credit Interest Margin will be enabled for modifications. It is inherited from product level.,Y,,
+Creditrate change Application date option,VARCHAR,Input,50,Stores CASA Account Variation Generic code for Rate Change Application Date Variation. Generic code parent is CASARATECHANGEAPPDATEOPTION,From Rate Change Date,,
+Is Credit Variation Rate Applicable,VARCHAR,Input,1,"If Y, rate from UBVARIATIONINTRATE column of INTERESTBASECODE table will be used else rate from INTRATE column will be used.",N,,
+Debit Interest Margin Type,VARCHAR,Input,30,Credit interest margin type. Either fixed(FLATVALUE) or percentage(PERCENT) margin,Flat Value,,
+Debit Interest Margin Enabled,VARCHAR,Input,1,Indicates whether Credit Interest Margin will be enabled for modifications. It is inherited from product level.,Y,,
+Debitrate change Application date option,VARCHAR,Input,50,Stores CASA Account Variation Generic code for Rate Change Application Date Variation. Generic code parent is CASARATECHANGEAPPDATEOPTION,From Rate Change Date,,
+Is Debit Variation Rate Applicable,VARCHAR,Input,1,"If Y, rate from UBVARIATIONINTRATE column of INTERESTBASECODE table will be used else rate from INTRATE column will be used.",N,,
+Is excluded from dormancy marking,VARCHAR,Input,1,Flag to indicate whether account is excluded from dormancy marking EOD.  {N} means account should get processed and {Y} means account should not be considered for dormancy processing.,N,,
+JointAccountOwnershipPercentage,DECIMAL,Input,24,Specifying Ownership percentage for each customer in joint account,0.00,,
+Consolidated Bulk Payment,VARCHAR,Default,50,"Represents Consolidated DR Bulk Payment (ie., Yes or No)",,,
+Significant Excess Amount,DECIMAL,Default,,Represents Significant Excess Amount,0,CONSTANT,0
+Notice Free Withdrawl Amount,DECIMAL,Default,,Represents Notice Free Withdrawl Amount,0,CONSTANT,0
+FAB Applicable,VARCHAR,Default,1,FAB Applicable,Y,CONSTANT,Y
+Cooling OFF End Date,DATE,Default,,Cooling OFF End Date,,,
+Is Other Bank Funding Account for Debit,VARCHAR,Default,1,Is Other Bank Funding Account for Debit,N,CONSTANT,N
+Customer Base Margin,DECIMAL,Default,,Customer base margin,0,CONSTANT,0
+Is Other Bank Funding Account for Credit,VARCHAR,Default,1,Is Other Bank Funding Account for Credit,N,CONSTANT,N
