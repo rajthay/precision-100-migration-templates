@@ -1,1 +1,2 @@
 10,o_party_common,spool,|
+20,o_party_person_details,spool,|

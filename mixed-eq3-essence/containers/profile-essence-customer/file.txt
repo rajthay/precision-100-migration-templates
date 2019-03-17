@@ -1,0 +1,2 @@
+10,profile-essence-customer-volume.sql,sql
+20,PR_ESSENCE_CUST_VOLUME,spool
