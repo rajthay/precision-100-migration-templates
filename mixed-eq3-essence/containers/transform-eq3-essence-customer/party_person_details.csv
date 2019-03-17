@@ -1,0 +1,9 @@
+Column_Name,DataType,Input_Method,MaxLength,Description,Default,Mapping Type,Mapping Value
+NationalIDType,VARCHAR,Input,50,"For use in countries that have a National Unique Identifier, such as the Social Security number in the US. Enter the configurable code for the appropriate type of national identifier, e.g. USSSN, as defined by means of a National Unique identifier conf",Other,PASSTHRU,BGPF.BG0001
+NationalID,VARCHAR,Input,50,"For use in countries that have a unique Id. Such as the US Social Security number, Singapore Id, Hong Kong Id.  The system administrator must also be able to use the National Unique identifier configuration function to specify ",,PASSTHRU,BGPF.BG0002
+DateOfBirth,DATE,Input,,Must be a valid date before today. Can be used to derive the age of the personal party and therefore whether they are a minor or senior citizen. ,,PASSTHRU,BGPF.BG0007
+EmploymentStatus,VARCHAR,Input,50,"Select from a configurable list of values, such as - 	Full time (definition will depend on local law) 	Part time (definition will depend on local law) - 	Self employed - 	Student - 	Minor - 	Recently redundant (within bank-defined period) - 	Previously e",Unknown,PASSTHRU,BGPF.BG0010
+Gender,VARCHAR,Input,50,Select Male or Female,,PASSTHRU,BGPF.BG0008
+MotherMaidenName,VARCHAR,Input,100,Mothers maiden name,Unknown,PASSTHRU,BGPF.BGC033
+FatherName,VARCHAR,Input,100,Fathers name of a party,,PASSTHRU,BGPF.BGC034
+SpouseName,VARCHAR,Input,100,Name of the spouse,,PASSTHRU,BGPF.BGC035
