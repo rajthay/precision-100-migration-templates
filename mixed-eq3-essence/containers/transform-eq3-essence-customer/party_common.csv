@@ -1,0 +1,86 @@
+Column_Name,DataType,Input_Method,Y,MaxLength,Description
+PartyId,VARCHAR,Input,Y,120,Party Id
+PartyType,VARCHAR,Input,Y,,Party type enterprise(1063) or personal(1062)
+PartySubType,VARCHAR,Input,Y,,"Party Subtype -Student,staff etc from Generic Code"
+PartyCategory,VARCHAR,Input,N,,"Party Category - Full, walkin, agent etc."
+PartyName,VARCHAR,Input,Y,255,Name of the party
+PartyEquivalentName,VARCHAR,Input,N,255,Party equivalent name
+ShortName,VARCHAR,Input,Y,60,Party short name
+EquivalentShortName,VARCHAR,Input,N,60,Party equivalent short name
+Language,VARCHAR,Default,N,,Language id
+PartyAcquisitionDate,TIMESTAMP,Input,N,,"When the customer was created, if not provided date of migration is treated as customer auquisition date"
+RelationshipManagerID,VARCHAR,Input,N,30,The ID of the Relationship Manager responsible for this customer.
+PartyStatus,VARCHAR,Default,N,,Bank party status
+IsMultiHost,VARCHAR,Input,N,1,If party id is global across host systems
+AlphaCode,VARCHAR,Input,Y,,"Alpha code for quick seraches, not used for Internal customers, used only in case of Individual and Enterprise customers"
+BranchCode,VARCHAR,Input,Y,8,Party associated with branch (Sort code)
+KYCStatus,VARCHAR,Default,N,,Party KYC status
+KYCExpiryDate,DATE,Default,Y,10,Party KYC expiry date.
+KYCCautionaryDate,DATE,Default,N,,Date on which party KYC status marked as cautionary
+LastModifiedDate,DATE,Default,N,,Last modified date
+CommonSequence,VARCHAR,Sequence,N,20,Surrogate Key
+PartyStatusID,VARCHAR,Default,N,,PARTY status
+StatusType,VARCHAR,Default,N,,Public Party Status or bank party Status
+Country,VARCHAR,Default,N,,Country Code
+Region,VARCHAR,Default,N,,Region Code
+LocalityType,VARCHAR,Default,N,,"Party Locality types (local public, private, global)"
+CountryCode,VARCHAR,Input,N,20,Country Code
+RegionCode,VARCHAR,Input,N,50,Region Code
+AddressLine1,VARCHAR,Input,N,256,AddressLine1
+AddressLine2,VARCHAR,Input,N,256,AddressLine2
+AddressLine3,VARCHAR,Input,N,256,AddressLine3
+AddressLine4,VARCHAR,Input,N,256,AddressLine4
+AddressLine5,VARCHAR,Input,N,256,AddressLine5
+AddressLine6,VARCHAR,Input,N,256,AddressLine6
+AddressLine7,VARCHAR,Input,N,256,AddressLine7
+AddressLine8,VARCHAR,Input,N,256,AddressLine8
+AddressLine9,VARCHAR,Input,N,256,AddressLine9
+AddressLine10,VARCHAR,Input,N,256,AddressLine10
+PostalCode,VARCHAR,Input,Y,20,Postal Code
+City,VARCHAR,Input,N,50,City or Town
+EntityType,VARCHAR,Default,N,,PARTY / ACCOUNT from generic code.
+IsDefaultAddress,VARCHAR,Default,N,,is a default address
+AddressType,VARCHAR,Default,N,,"From a configurable list of values such as: owner, renting, lodger, living with partner/parents, leasing."
+AddressFromDate,DATE,Input,N,,"If address history is required, this must be a valid date. It can be used to ascertain whether the required address history has been met and prompt for further address history if it has not. Where address history is not required, the from date should aut"
+AddressToDate,DATE,Input,N,,"A value of blank (the default) indicates that this is current, else the user must enter a valid date that must be after the From date."
+DUNsNumberOfLocation,VARCHAR,Default,N,20,"The DUNS 9 digit number or Data Universal Numbering System is a unique identifier for businesses. DUNS numbers are assigned and maintained by Dun & Bradstreet (D&B) and are used for a variety of purposes, including establishing business credit, applying "
+PrincipalContact,VARCHAR,Input,N,50,Name or position of person to whom correspondence will be addressed at this location.
+StatusAtTheAddress,VARCHAR,Input,N,50,Status at address
+PreferredStatementChannel,VARCHAR,Input,N,50,"Select from configurable list of those offered by the bank and valid for the party e.g. mail, internet, SWIFT. Configurable default value."
+PreferredLanguage,VARCHAR,Default,N,,For customer documents and other communications. If not entered the bank default language will be used.
+PreferredReportingCurrency,VARCHAR,Default,N,,"The preferred reporting currency for use with customer documents for this party. Select from list of ISO currency codes. If left blank, base currency will be used."
+IsAgreetoContactForMarketing,VARCHAR,Input,N,,Agree to contact by bank for marketing purposes?
+FeeWaiverIndicator,VARCHAR,Input,N,,Fee waiver eligibility indicator
+IsBundlePricingEligibility,VARCHAR,Input,N,,Bundle pricing eligibility indicator
+IsWHTLiable,VARCHAR,Input,N,1,Withholding liability
+TaxCountry,VARCHAR,Input,N,20,Country Code
+TaxIdNumber,VARCHAR,Input,N,50,Tax Number
+IsTaxPayer,VARCHAR,Generate,N,1,Is a tax payer ?
+IsRegistredForGST,VARCHAR,Input,N,1,Is registered for GST tax ?
+GSTRegistrationNumber,VARCHAR,Input,N,50,Registration number for goods or services tax ?
+TaxExcemptionId,VARCHAR,Input,N,50,Tax exemption status id
+RelatedPartyID,VARCHAR,Input,N,30,Primary key used internally in the system
+RelationshipType,VARCHAR,Input,N,50,"The relationship of the related party to the original party.The reciprocal relationship type will be associated with the original party. Codetype 1062 for personal parties, 1063 for enterprise parties"
+PercentageOfOwnership,DECIMAL,Default,N,,"Percentage of ownership, liability or shareholding. Mandatory for certain types of relationship, such as owners, partners, limited liability partners and shareholders."
+RelationshipFromDate,DATE,Default,N,,Must be a valid date. Default = processing date
+RelationshipToDate,DATE,Default,N,,"A value of blank indicates that this is a current relationship, else the user must enter a valid date that must be after the from date"
+Narrative,VARCHAR,Default,N,256,Narrative is for every relationship attached to a PARTY
+ClosureDate,DATE,Default,N,,Party closure date time
+WatchListStatus,VARCHAR,Default,N,,Watchlist Status
+StatusReasonCode,VARCHAR,Default,N,,party status reason code is provided whenver party status is changed manually
+StatusChangeDate,DATE,Default,N,,Party status changed date
+StatusStartDate,DATE,Default,N,,"this is the date on which the status changed, or conviction or sentence began."
+StatusEndDate,DATE,Default,N,,"This is the discharge or release date, or the status end date, which if entered must be greater than any start date."
+JudgementType,VARCHAR,Default,N,,This is a generic code  for Court Judgement.
+JudgementExpiryDate,DATE,Default,N,,"This is the date on which the judgment need no longer be reported (is ""spent""), and may need to be deleted from the system."
+IsCustodial,VARCHAR,Default,N,,"True if the sentence resulted in detention, otherwise false."
+StatusChangeReason,VARCHAR,Default,N,,Reason Code
+StatementProfileId,VARCHAR,Input,N,20,Customer Statement Profile Id.Primary key of CUSTSTMTPROFILE table
+DelinquencyStatus,VARCHAR,Input,N,20,Deliquent Status of Customer.
+DelinquencyLoanStatus,VARCHAR,Input,N,50,"When updating the Customer Worst Status marking, there should be two different fields to store the Worst Case Status for Lending accounts and Movement Accounts.  While determining the Worst  status ever recorded for Setting as 1,  the system should proceed to update with the worst ever delinquency stage of any one of the account of the Customer for the accounts group(Lending Accounts or Movement Accounts) and  the number of days or installments in arrears for the Worst ever Delinquency stage should not be the basis."
+ChargeFundingAccount,VARCHAR,Input,N,20,Charge Funding Account
+SignatureStatus,VARCHAR,Default,N,50,"Signature Status - Y if Siganature captured in SigCap. N if Signature not captured. Default as N, to be updated once SigCap migration is complete and update reference is SignatureTransactionReference"
+SignatureTransactionReference,VARCHAR,Default,N,30,Signature Transaction Reference - NA is SiganatureStatus is N. Reference from SigCap to be updated if SignatureStatus is Y. Defaulted as NA. Reference to be captured once SigCap migration to be completed
+PriorKYCStatus,VARCHAR,Default,N,50,Prior KYC Status. No Value to be defaulted
+IsMobileBanking,VARCHAR,Default,N,1,While Party On Boarding Options must be provided to select Mobile Baking Facility
+IsInternetBanking,VARCHAR,Default,N,1,While Party On Boarding Options must be provided to select Internet Baking Facility
